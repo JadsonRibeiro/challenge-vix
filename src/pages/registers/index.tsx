@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai"
+import { HiOutlineDotsCircleHorizontal, HiOutlineExclamationCircle, HiOutlineCheckCircle } from "react-icons/hi"
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
@@ -14,6 +15,12 @@ import styles from "./home.module.scss";
 
 interface RegistersPageProps {
   registers: Register[]
+}
+
+const StatusICon = {
+  pending: <HiOutlineDotsCircleHorizontal color="orange" size={20}/>,
+  canceled: <HiOutlineExclamationCircle color="red" size={20}/>,
+  completed: <HiOutlineCheckCircle color="green" size={20}/>
 }
 
 export default function RegistersPage({ registers: loadedRegisters }: RegistersPageProps) {
@@ -54,7 +61,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
               <div key={register.id} className={styles.item}>
                 <span className={styles.name}>{register.name}</span>
                 <span>{new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}</span>
-                <span>{register.status}</span>
+                <span>{StatusICon[register.status]}</span>
                 <div className={styles.actions}>
                   <button>
                     <Link href={`/registers/edit/${register.id}`}><a>
