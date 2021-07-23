@@ -3,6 +3,20 @@ body {
   padding: 0;
   margin: 0;
   font-family: Roboto, sans-serif;
+  color: #292929;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+
+:root {
+  --white: #FFFFFF; 
+  
+  --green-700: #2BB84A;
+  --green-600: #41B85C;
+  --green-500: #57B86C;
+  --green-400: #6AB87A;
+
 }
 
 a {
