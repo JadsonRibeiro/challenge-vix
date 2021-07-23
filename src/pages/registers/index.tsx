@@ -54,6 +54,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
               <div key={register.id} className={styles.item}>
                 <span className={styles.name}>{register.name}</span>
                 <span>{new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}</span>
+                <span>{register.status}</span>
                 <div className={styles.actions}>
                   <button>
                     <Link href={`/registers/edit/${register.id}`}><a>

@@ -4,13 +4,29 @@
       "name": "Register 10",
       "description": "Register description 10",
       "date": "2021-07-23",
+      "status": "completed",
       "id": 1
     },
     {
       "name": "Mais um registro",
       "description": "Teste",
       "date": "2021-07-13",
+      "status": "canceled",
       "id": 3
+    },
+    {
+      "name": "Mais um registro teste",
+      "description": "teste",
+      "date": "2021-07-29",
+      "status": "canceled",
+      "id": 4
+    },
+    {
+      "name": "Registro 03",
+      "description": "Descricao do registro 3",
+      "date": "2021-07-26",
+      "status": "canceled",
+      "id": 5
     }
   ]
 }

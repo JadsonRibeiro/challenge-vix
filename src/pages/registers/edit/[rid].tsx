@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
+import { StatusSelect } from "../../../components/Select";
 
 import { api } from "../../../services/api";
 
@@ -21,18 +22,19 @@ export default function EditRegister({ register }: EditRegisterProps) {
 
   const [name, setName] = useState(register.name);
   const [description, setDescription] = useState(register.description);
+  const [status, setStatus] = useState(register.status);
   const [date, setDate] = useState(register.date);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    if(!name || !description || !date) {
+    if(!name || !description || !date || !status) {
       return alert('Preencha todos os campos.');
     }
 
     try {
       await api.put(`/registers/${register.id}`, {
-        name, description, date
+        name, description, date, status
       });
       alert("Registro atualizado com sucesso!");
       router.push("/registers");
@@ -56,6 +58,10 @@ export default function EditRegister({ register }: EditRegisterProps) {
           rows={5}
           value={description}
           onChange={event => setDescription(event.target.value)}
+        />
+        <StatusSelect 
+          value={status}
+          onChange={event => setStatus(event.target.value)}
         />
         <Input 
           name="Data" 

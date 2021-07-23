@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
+import { StatusSelect } from "../../../components/Select";
 
 import { api } from "../../../services/api";
 
@@ -14,18 +15,19 @@ export default function AddRegister() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('');
   const [date, setDate] = useState('');
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    if(!name || !description || !date) {
+    if(!name || !description || !date || !status) {
       return alert('Preencha todos os campos.');
     }
 
     try {
       await api.post("/registers", {
-        name, description, date
+        name, description, date, status
       });
       alert("Registro adicionar com sucesso!");
       router.push("/registers");
@@ -49,6 +51,10 @@ export default function AddRegister() {
           rows={5}
           value={description}
           onChange={event => setDescription(event.target.value)}
+        />
+        <StatusSelect 
+          value={status}
+          onChange={event => setStatus(event.target.value)}
         />
         <Input 
           name="Data" 
