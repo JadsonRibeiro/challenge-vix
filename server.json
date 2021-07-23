@@ -1,0 +1,22 @@
+{
+  "registers": [
+    {
+      "id": 1,
+      "name": "Register 01",
+      "description": "Register description 01",
+      "date": "2021-07-23"
+    },
+    {
+      "id": 2,
+      "name": "Register 02",
+      "description": "Register description 02",
+      "date": "2021-07-23"
+    },
+    {
+      "id": 3,
+      "name": "Register 03",
+      "description": "Register description 03",
+      "date": "2021-07-23"
+    }
+  ]
+}
