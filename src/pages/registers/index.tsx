@@ -1,11 +1,12 @@
+import { ChangeEvent, useState } from "react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
 import { HiOutlineDotsCircleHorizontal, HiOutlineExclamationCircle, HiOutlineCheckCircle } from "react-icons/hi"
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
+import { StatusSelect } from "../../components/Select";
 
 import { api } from "../../services/api";
 
@@ -60,12 +61,29 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
     setRegisters(reorderedRegisters);
   }
 
+  function handleFilterRegisters(event: ChangeEvent<HTMLSelectElement>) {
+    const selectedStatus = event.target.value;
+
+    if(!selectedStatus)
+      return setRegisters(loadedRegisters);
+    
+    const filteredRegisters = loadedRegisters.filter(register => register.status === selectedStatus);
+
+    setRegisters(filteredRegisters);
+  }
+
   return (
     <>
       <Header />
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>Registros</h1>
+          <div className="filter">
+            Filtrar 
+            <StatusSelect 
+              onChange={handleFilterRegisters}
+            />
+          </div>
           <Button>
             <Link href="/registers/add">Novo Registro</Link>
           </Button>
