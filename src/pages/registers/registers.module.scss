@@ -12,37 +12,21 @@
   }
 
   .list {
-    .listHeader {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      padding-bottom: 0.5rem;
-
-      border-bottom: 1px solid var(--green-400);
-
-      span {
-        font-weight: bold;
-        flex: 1;
-
-        &.orderableItem {
-          svg {
-            cursor: pointer;
-          }
-        }
-      }
+    span {
+      flex: 1;
+      text-align: center;
     }
 
     .listItem {
       display: flex;
       justify-content: space-between;
 
-      span {
-        flex: 1;
-      }
-
       & + .item {
         margin-top: 0.5rem;
+      }
+
+      span:first-child {
+        text-align: start;
       }
 
       .actions {
@@ -51,6 +35,22 @@
         button {
           background: none;
           border: none;
+        }
+      }
+    }
+
+    .listHeader {
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--green-400);
+
+      span {
+        font-weight: bold;
+
+        &.orderableItem {
+          svg {
+            cursor: pointer;
+          }
         }
       }
     }

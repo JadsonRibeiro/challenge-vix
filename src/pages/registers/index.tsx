@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, ReactNode, useState } from "react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
@@ -19,7 +19,7 @@ interface RegistersPageProps {
   registers: Register[]
 }
 
-const StatusICon = {
+const StatusICon: {[status: string]: ReactNode} = {
   pending: <HiOutlineDotsCircleHorizontal color="orange" size={20}/>,
   canceled: <HiOutlineExclamationCircle color="red" size={20}/>,
   completed: <HiOutlineCheckCircle color="green" size={20}/>
@@ -38,7 +38,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
       await api.delete(`/registers/${registerID}`);
 
       setRegisters(oldRegisters => {
-        return oldRegisters.filter(register => register.id !== registerID)
+        return oldRegisters.filter(register => register._id !== registerID)
       });
 
       alert('Registro excluído com sucesso!');
@@ -92,8 +92,8 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
 
         {registers.length > 0 ? (
           <div className={styles.list}>
-            <div className={styles.listHeader}>
-              <span>Nome</span>
+            <div className={`${styles.listItem} ${styles.listHeader}`}>
+              <span className={styles.name}>Nome</span>
               <span className={styles.orderableItem}>
                 {orderDirection === 'desc' 
                   ? <AiOutlineArrowDown onClick={reorderRegisters}/> 
@@ -105,18 +105,18 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
               <span>Ações</span>
             </div>
             {registers.map(register => (
-              <div key={register.id} className={styles.listItem}>
+              <div key={register._id} className={styles.listItem}>
                 <span className={styles.name}>{register.name}</span>
                 <span>{new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}</span>
                 <span>{StatusICon[register.status]}</span>
                 <span className={styles.actions}>
                   <button>
-                    <Link href={`/registers/edit/${register.id}`}><a>
+                    <Link href={`/registers/edit/${register._id}`}><a>
                       <AiOutlineEdit size={20} />
                     </a></Link>
                   </button>
                   <button
-                    onClick={() => handleDeteleRegister(register.id)}
+                    onClick={() => handleDeteleRegister(register._id)}
                   >
                     <AiOutlineDelete size={20} />
                   </button>
@@ -150,6 +150,8 @@ export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async 
       _order: 'desc'
     }
   });
+
+  console.log(' Res', response.data);
 
   if(response.data)
     registers = response.data;

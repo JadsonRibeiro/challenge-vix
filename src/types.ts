@@ -1,7 +1,7 @@
 export interface Register {
-  id: number;
+  _id: number;
   name: string;
   description: string;
-  status: "pending" | "canceled" | "completed";
+  status: string;
   date: string;
 }

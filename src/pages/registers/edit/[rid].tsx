@@ -33,7 +33,7 @@ export default function EditRegister({ register }: EditRegisterProps) {
     }
 
     try {
-      await api.put(`/registers/${register.id}`, {
+      await api.put(`/registers/${register._id}`, {
         name, description, date, status
       });
       alert("Registro atualizado com sucesso!");
