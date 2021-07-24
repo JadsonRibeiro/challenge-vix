@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useState } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai"
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
 import { HiOutlineDotsCircleHorizontal, HiOutlineExclamationCircle, HiOutlineCheckCircle } from "react-icons/hi"
 
 import { Button } from "../../components/Button";
@@ -11,7 +11,7 @@ import { api } from "../../services/api";
 
 import { Register } from "../../types";
 
-import styles from "./home.module.scss";
+import styles from "./registers.module.scss";
 
 interface RegistersPageProps {
   registers: Register[]
@@ -25,6 +25,7 @@ const StatusICon = {
 
 export default function RegistersPage({ registers: loadedRegisters }: RegistersPageProps) {
   const [registers, setRegisters] = useState(loadedRegisters);
+  const [orderDirection, setorderDirection] = useState('desc');
 
   async function handleDeteleRegister(registerID: number) {
     const deleteRegister = confirm('Tem certeza que deseja excluir esse registro?');
@@ -44,6 +45,21 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
       console.log('Erro ao excluir registro', error);
     }
   }
+
+  function reorderRegisters() {
+    const registersCopy = [...registers];
+
+    const reorderedRegisters = registersCopy.sort((a, b) => {
+      if(orderDirection === 'asc')
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      else
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+      
+    setorderDirection(direction => direction === 'asc' ? 'desc' : 'asc');
+    setRegisters(reorderedRegisters);
+  }
+
   return (
     <>
       <Header />
@@ -57,12 +73,24 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
 
         {registers.length > 0 ? (
           <div className={styles.list}>
+            <div className={styles.listHeader}>
+              <span>Nome</span>
+              <span className={styles.orderableItem}>
+                {orderDirection === 'desc' 
+                  ? <AiOutlineArrowDown onClick={reorderRegisters}/> 
+                  : <AiOutlineArrowUp onClick={reorderRegisters}/> 
+                }
+                Data
+              </span>
+              <span>Status</span>
+              <span>Ações</span>
+            </div>
             {registers.map(register => (
-              <div key={register.id} className={styles.item}>
+              <div key={register.id} className={styles.listItem}>
                 <span className={styles.name}>{register.name}</span>
                 <span>{new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}</span>
                 <span>{StatusICon[register.status]}</span>
-                <div className={styles.actions}>
+                <span className={styles.actions}>
                   <button>
                     <Link href={`/registers/edit/${register.id}`}><a>
                       <AiOutlineEdit size={20} />
@@ -73,7 +101,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
                   >
                     <AiOutlineDelete size={20} />
                   </button>
-                </div>
+                </span>
               </div>
             ))}
           </div>
@@ -87,7 +115,12 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
 
 export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async () => {
   let registers: Register[] = [];
-  const response = await api.get("/registers");
+  const response = await api.get("/registers", {
+    params: {
+      _sort: 'date',
+      _order: 'desc'
+    }
+  });
 
   if(response.data)
     registers = response.data;
