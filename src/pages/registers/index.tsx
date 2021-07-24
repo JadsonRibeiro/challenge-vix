@@ -13,6 +13,7 @@ import { api } from "../../services/api";
 import { Register } from "../../types";
 
 import styles from "./registers.module.scss";
+import { getSession } from "next-auth/client";
 
 interface RegistersPageProps {
   registers: Register[]
@@ -131,7 +132,17 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
   )
 }
 
-export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async ({ req }) => {
+  const session = await getSession({ req });
+  if(!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
   let registers: Register[] = [];
   const response = await api.get("/registers", {
     params: {
