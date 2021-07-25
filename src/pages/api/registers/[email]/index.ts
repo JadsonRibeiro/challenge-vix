@@ -1,7 +1,7 @@
 import { Db, MongoClient } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { RegistersController } from '../../../controllers/registersController';
+import { RegistersController } from '../../../../controllers/registersController';
 
 // Used to avoid too many connections
 let cachedDB: Db;

@@ -1,16 +1,23 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/client";
+import { GetServerSideProps } from "next";
 
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
 import { StatusSelect } from "../../../components/Select";
+import { User } from "next-auth";
 
 import { api } from "../../../services/api";
 
 import styles from "./add-register.module.scss";
 
-export default function AddRegister() {
+interface AddRegisterProps {
+  user: User
+}
+
+export default function AddRegister({ user }: AddRegisterProps) {
   const router = useRouter();
 
   const [name, setName] = useState('');
@@ -26,7 +33,7 @@ export default function AddRegister() {
     }
 
     try {
-      await api.post("/registers", {
+      await api.post(`/registers/${user.email}`, {
         name, description, date, status
       });
       alert("Registro adicionar com sucesso!");
@@ -68,4 +75,25 @@ export default function AddRegister() {
       </form>
     </div>
   )
+}
+
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  if(!session?.user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  const { user } = session;
+
+  return {
+    props: {
+      user
+    }
+  }
 }

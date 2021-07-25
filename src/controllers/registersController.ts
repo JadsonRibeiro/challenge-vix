@@ -3,10 +3,12 @@ import { Db, ObjectId } from 'mongodb';
 
 export const RegistersController = {
   index: async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+    const { email } = req.query;
+
     try {
       const collection = db.collection('registers');
 
-      const response = await collection.find().toArray();
+      const response = await collection.find({ email }).toArray();
 
       res.status(200).json(response);
     } catch(e) {
@@ -29,10 +31,15 @@ export const RegistersController = {
     }
   }, 
   create: async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+    const { email } = req.query;
+    
     try {
       const collection = db.collection('registers');
 
-      await collection.insertOne(req.body);
+      await collection.insertOne({
+        email,
+        ...req.body
+      });
 
       res.status(201).json({ status: 'success' });
     } catch(e) {

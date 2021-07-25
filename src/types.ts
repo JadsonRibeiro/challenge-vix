@@ -4,4 +4,5 @@ export interface Register {
   description: string;
   status: string;
   date: string;
+  email: string;
 }

@@ -1,6 +1,8 @@
 import { GetServerSideProps } from "next";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
+import { User } from "next-auth";
+import { getSession } from "next-auth/client";
 
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
@@ -14,10 +16,11 @@ import { Register } from "../../../types";
 import styles from "./edit-register.module.scss"; 
 
 interface EditRegisterProps {
-  register: Register
+  register: Register,
+  user: User
 }
 
-export default function EditRegister({ register }: EditRegisterProps) {
+export default function EditRegister({ register, user }: EditRegisterProps) {
   const router = useRouter();
 
   const [name, setName] = useState(register.name);
@@ -33,7 +36,7 @@ export default function EditRegister({ register }: EditRegisterProps) {
     }
 
     try {
-      await api.put(`/registers/${register._id}`, {
+      await api.put(`/registers/${user.email}/${register._id}`, {
         name, description, date, status
       });
       alert("Registro atualizado com sucesso!");
@@ -77,10 +80,21 @@ export default function EditRegister({ register }: EditRegisterProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, req }) => {
+  const session = await getSession({ req });
+  if(!session?.user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  const { user } = session;
   const { rid } = query;
 
-  const response = await api.get(`/registers/${rid}`);
+  const response = await api.get(`/registers/${user.email}/${rid}`);
 
   if(!response.data) {
     return {
@@ -93,7 +107,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   return {
     props: {
-      register: response.data
+      register: response.data,
+      user
     }
   }
 }

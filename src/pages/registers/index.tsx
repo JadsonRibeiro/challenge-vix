@@ -1,6 +1,8 @@
 import { ChangeEvent, ReactNode, useState } from "react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { getSession } from "next-auth/client";
+import { User } from "next-auth";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
 import { HiOutlineDotsCircleHorizontal, HiOutlineExclamationCircle, HiOutlineCheckCircle } from "react-icons/hi"
 
@@ -13,10 +15,10 @@ import { api } from "../../services/api";
 import { Register } from "../../types";
 
 import styles from "./registers.module.scss";
-import { getSession } from "next-auth/client";
 
 interface RegistersPageProps {
-  registers: Register[]
+  registers: Register[],
+  user: User
 }
 
 const StatusICon: {[status: string]: ReactNode} = {
@@ -25,7 +27,7 @@ const StatusICon: {[status: string]: ReactNode} = {
   completed: <HiOutlineCheckCircle color="green" size={20}/>
 }
 
-export default function RegistersPage({ registers: loadedRegisters }: RegistersPageProps) {
+export default function RegistersPage({ registers: loadedRegisters, user }: RegistersPageProps) {
   const [registers, setRegisters] = useState(loadedRegisters);
   const [orderDirection, setorderDirection] = useState('desc');
 
@@ -35,7 +37,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
     if(!deleteRegister) return;
 
     try {
-      await api.delete(`/registers/${registerID}`);
+      await api.delete(`/registers/${user.email}/${registerID}`);
 
       setRegisters(oldRegisters => {
         return oldRegisters.filter(register => register._id !== registerID)
@@ -134,7 +136,7 @@ export default function RegistersPage({ registers: loadedRegisters }: RegistersP
 
 export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async ({ req }) => {
   const session = await getSession({ req });
-  if(!session) {
+  if(!session?.user) {
     return {
       redirect: {
         destination: '/',
@@ -143,22 +145,23 @@ export const getServerSideProps: GetServerSideProps<RegistersPageProps> = async 
     }
   }
 
+  const { user } = session;
+
   let registers: Register[] = [];
-  const response = await api.get("/registers", {
+  const response = await api.get(`/registers/${user?.email}`, {
     params: {
       _sort: 'date',
       _order: 'desc'
     }
   });
 
-  console.log(' Res', response.data);
-
   if(response.data)
     registers = response.data;
   
   return {
     props: {
-      registers
+      registers,
+      user
     }
   }
 }
