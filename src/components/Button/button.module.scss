@@ -1,10 +1,14 @@
 .container {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   background: var(--green-700);
   border: none;
-  height: 2.5rem;
-  color: var(--white);
-  padding: 0 1.5rem;
   border-radius: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  color: var(--white);
+  padding: 0 1rem;
   text-transform: uppercase;
 }

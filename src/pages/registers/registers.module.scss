@@ -56,3 +56,39 @@
     }
   }
 }
+
+@media (max-width: 800px) {
+  .list {
+    .listItem {
+      span:nth-child(3) {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .header {
+    button {
+      span {
+        display: none;
+      }
+    }
+  }
+  .list {
+    .listItem {
+      span:nth-child(2) {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .header {
+    .filter {
+      display: none;
+    }
+  }
+}
+

@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { getSession } from "next-auth/client";
 import { User } from "next-auth";
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineArrowDown, AiOutlineArrowUp, AiOutlinePlus } from "react-icons/ai"
 import { HiOutlineDotsCircleHorizontal, HiOutlineExclamationCircle, HiOutlineCheckCircle } from "react-icons/hi"
 
 import { Button } from "../../components/Button";
@@ -81,14 +81,17 @@ export default function RegistersPage({ registers: loadedRegisters, user }: Regi
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>Registros</h1>
-          <div className="filter">
-            Filtrar 
+          <div className={styles.filter}>
+            Filtrar {" "}
             <StatusSelect 
               onChange={handleFilterRegisters}
             />
           </div>
           <Button>
-            <Link href="/registers/add">Novo Registro</Link>
+            <Link href="/registers/add"><a>
+              <span>Novo Registro</span>
+              <AiOutlinePlus />
+            </a></Link>
           </Button>
         </div>
 
@@ -96,7 +99,7 @@ export default function RegistersPage({ registers: loadedRegisters, user }: Regi
           <div className={styles.list}>
             <div className={`${styles.listItem} ${styles.listHeader}`}>
               <span className={styles.name}>Nome</span>
-              <span className={styles.orderableItem}>
+              <span className={`${styles.date} ${styles.orderableItem}`}>
                 {orderDirection === 'desc' 
                   ? <AiOutlineArrowDown onClick={reorderRegisters}/> 
                   : <AiOutlineArrowUp onClick={reorderRegisters}/> 
@@ -109,7 +112,9 @@ export default function RegistersPage({ registers: loadedRegisters, user }: Regi
             {registers.map(register => (
               <div key={register._id} className={styles.listItem}>
                 <span className={styles.name}>{register.name}</span>
-                <span>{new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}</span>
+                <span className={styles.date}>
+                  {new Intl.DateTimeFormat('pt-BR').format(new Date(register.date))}
+                </span>
                 <span>{StatusICon[register.status]}</span>
                 <span className={styles.actions}>
                   <button>

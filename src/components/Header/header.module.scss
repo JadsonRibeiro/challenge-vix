@@ -19,6 +19,10 @@
       flex-direction: column;
       align-items: center;
 
+      strong {
+        text-align: center;
+      }
+
       span {
         display: flex;
         align-items: center;
